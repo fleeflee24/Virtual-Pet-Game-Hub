@@ -21,13 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let coins = 0, gems = 0, lastLoginDate = null, loginStreak = 0;
         let currentPetLook = 'base', ownedCosmetics = ['base'];
         let isSleeping = false, isManualSleep = false, sleepCheckInterval = null;
+        let colorSortHighScore = 0; // <-- ADDED High Score state
 
         // --- Constants ---
         const STORAGE_KEYS = {
             COINS: 'petApp.coins', GEMS: 'petApp.gems', LAST_LOGIN: 'petApp.lastLoginDate',
             STREAK: 'petApp.loginStreak', PET_LOOK: 'petApp.petLook',
             OWNED_COSMETICS: 'petApp.ownedCosmetics', IS_SLEEPING: 'petApp.isSleeping',
-            IS_MANUAL_SLEEP: 'petApp.isManualSleep'
+            IS_MANUAL_SLEEP: 'petApp.isManualSleep',
+            COLOR_SORT_HIGH_SCORE: 'petApp.colorSortHighScore' // <-- ADDED High Score key
         };
         const DAILY_BONUS_REWARDS = [
             { type: 'coins', amount: 50 }, { type: 'coins', amount: 75 }, { type: 'coins', amount: 100 },
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem(STORAGE_KEYS.OWNED_COSMETICS, JSON.stringify(ownedCosmetics));
                 localStorage.setItem(STORAGE_KEYS.IS_SLEEPING, JSON.stringify(isSleeping));
                 localStorage.setItem(STORAGE_KEYS.IS_MANUAL_SLEEP, JSON.stringify(isManualSleep));
+                localStorage.setItem(STORAGE_KEYS.COLOR_SORT_HIGH_SCORE, colorSortHighScore.toString()); // <-- ADDED Save High Score
             } catch (error) { console.error("Error saving game data:", error); }
         }
 
@@ -75,11 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ownedCosmetics = [...new Set(['base', ...loadedOwned])];
                 isSleeping = JSON.parse(localStorage.getItem(STORAGE_KEYS.IS_SLEEPING) || 'false');
                 isManualSleep = JSON.parse(localStorage.getItem(STORAGE_KEYS.IS_MANUAL_SLEEP) || 'false');
+                colorSortHighScore = parseInt(localStorage.getItem(STORAGE_KEYS.COLOR_SORT_HIGH_SCORE) || '0', 10); // <-- ADDED Load High Score
                 console.log("Game data loaded.");
             } catch (error) {
                 console.error("Error loading game data:", error);
                 coins = 0; gems = 0; lastLoginDate = null; loginStreak = 0;
                 currentPetLook = 'base'; ownedCosmetics = ['base']; isSleeping = false; isManualSleep = false;
+                colorSortHighScore = 0; // <-- ADDED Reset High Score in catch
             }
         }
 
@@ -105,6 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateCosmeticButtons();
             updateManualSleepButtons();
+            // Update Color Sort UI if it's visible and initialized
+            if (window.colorSortGame && typeof window.colorSortGame.updateGameUI === 'function') {
+                window.colorSortGame.updateGameUI();
+            }
         }
 
         // --- Pet Appearance & Sleep ---
@@ -207,6 +216,19 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUI(); saveGameData();
         }
 
+        // --- High Score Management (Color Sort) --- <-- ADDED Section
+        function updateColorSortHighScore(level) {
+            if (level > colorSortHighScore) {
+                colorSortHighScore = level;
+                console.log(`New Color Sort High Score: ${colorSortHighScore}`);
+                saveGameData(); // Save immediately when high score changes
+                updateUI(); // Update the UI in case the high score is displayed elsewhere
+            }
+        }
+        function getColorSortHighScore() {
+            return colorSortHighScore;
+        }
+
         // --- Daily Bonus Logic ---
         function claimDailyBonus() {
             const today = getTodayDateString();
@@ -228,9 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
             colorSortGameArea.style.display = 'block';
             if (playColorSortButton) playColorSortButton.disabled = true;
 
+            // Ensure window.petApp has all necessary functions before initializing game
             if (!window.petApp) {
-                 window.petApp = { addCoins, spendCoins, getCoins };
+                 window.petApp = {
+                     addCoins,
+                     spendCoins,
+                     getCoins,
+                     updateColorSortHighScore, // <-- ADDED
+                     getColorSortHighScore      // <-- ADDED
+                 };
                  console.warn("window.petApp defined in showGameArea.");
+            } else {
+                // Ensure existing object has the new functions
+                window.petApp.updateColorSortHighScore = updateColorSortHighScore;
+                window.petApp.getColorSortHighScore = getColorSortHighScore;
             }
 
             if (window.colorSortGame && typeof window.colorSortGame.init === 'function') {
@@ -254,7 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.petApp = {
             addCoins: addCoins,
             spendCoins: spendCoins,
-            getCoins: getCoins
+            getCoins: getCoins,
+            updateColorSortHighScore: updateColorSortHighScore, // <-- ADDED
+            getColorSortHighScore: getColorSortHighScore     // <-- ADDED
         };
         console.log("window.petApp defined.");
 
