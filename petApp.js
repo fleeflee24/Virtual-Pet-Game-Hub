@@ -34,9 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
             { type: 'gems', amount: 1 }, { type: 'coins', amount: 150 }, { type: 'coins', amount: 200 },
             { type: 'gems', amount: 3 }
         ];
+        // Use Percentages for responsive background positioning
         const PET_LOOKS = {
-            'base': '0px 0px', 'cowboy': '-512px 0px',
-            'sleeping': '0px -512px', 'gentleman': '-512px -512px'
+            'base':      '0% 0%',     // Top-Left
+            'cowboy':    '100% 0%',   // Top-Right
+            'sleeping':  '0% 100%',   // Bottom-Left
+            'gentleman': '100% 100%'  // Bottom-Right
         };
         const COSMETICS = {
             'cowboy': { name: 'Cowboy', cost: 100, spriteKey: 'cowboy' },
@@ -97,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (lastLoginDate && !isYesterday(lastLoginDate)) displayStreak = 0;
                     const nextRewardIndex = (displayStreak % DAILY_BONUS_REWARDS.length);
                     const nextReward = DAILY_BONUS_REWARDS[nextRewardIndex];
-                    // Use correct emojis
                     bonusMessageP.textContent = `Claim your Day ${displayStreak + 1} bonus: ${nextReward.amount} ${nextReward.type === 'gems' ? '💎' : '🪙'}!`;
                 }
             }
@@ -156,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         button.textContent = `Equip ${cosmetic.name}`;
                     }
                 } else {
-                    // Use correct coin emoji
                     button.textContent = `Buy ${cosmetic.name} (${cosmetic.cost} 🪙)`;
                     if (coins < cosmetic.cost) button.disabled = true;
                 }
@@ -214,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let rewardIndex = (loginStreak - 1) % DAILY_BONUS_REWARDS.length;
             const reward = DAILY_BONUS_REWARDS[rewardIndex];
             let message = "";
-            // Use correct emojis
             if (reward.type === 'coins') { addCoins(reward.amount); message = `Awesome! ${reward.amount} 🪙!`; }
             else if (reward.type === 'gems') { addGems(reward.amount); message = `Fantastic! ${reward.amount} 💎!`; }
             lastLoginDate = today;
