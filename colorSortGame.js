@@ -39,10 +39,7 @@
         else if (totalSandUnits % numColors !== 0) { console.error(`Level ${level}: Cannot find suitable color count. Defaulting.`); numColors = 2; }
         const unitsPerColor = totalSandUnits > 0 ? totalSandUnits / numColors : 0;
         if (!Number.isInteger(unitsPerColor) && totalSandUnits > 0) { console.error(`Level ${level} config error: unitsPerColor (${unitsPerColor}).`); return { numGlasses: 4, numColors: 2, unitsPerColor: 4, numFilledGlasses: 2 }; }
-        const glassesPerRow = Math.max(4, Math.ceil(numGlasses / 2));
-        const containerWidth = glassesPerRow * (70 + 15) + 15;
-        if (gameContainer) gameContainer.style.maxWidth = `${containerWidth}px`;
-        if (gameInfoDiv) gameInfoDiv.style.maxWidth = `${containerWidth}px`;
+        // Removed dynamic width setting - handled by CSS
         return { numGlasses, numColors, unitsPerColor, numFilledGlasses };
     }
 
@@ -58,7 +55,7 @@
     }
 
     function initializeLevel() {
-        console.log("colorSortGame: initializeLevel called");
+        // console.log("colorSortGame: initializeLevel called"); // Less verbose
         if (!gameInitialized) { console.error("colorSortGame: Cannot initialize level, game not initialized."); return; }
         currentLevelConfig = getGameConfigForLevel(currentLevel);
         const config = currentLevelConfig;
@@ -73,7 +70,7 @@
         }
         initialLevelState = deepCopy(glasses);
         selectedGlassIndex = null;
-        console.log("colorSortGame: Level initialized, calling renderAllGlasses...");
+        // console.log("colorSortGame: Level initialized, calling renderAllGlasses..."); // Less verbose
         renderAllGlasses();
     }
 
@@ -93,13 +90,12 @@
 
     // --- Rendering ---
     function renderAllGlasses() {
-        console.log("colorSortGame: renderAllGlasses called");
+        // console.log("colorSortGame: renderAllGlasses called"); // Less verbose
         if (!gameInitialized || !gameContainer) { console.error("colorSortGame: Cannot render glasses, game not initialized or container missing."); return; }
         gameContainer.innerHTML = "";
         if (glasses.length === 0) { console.warn("colorSortGame: glasses array is empty in renderAllGlasses."); }
         let glassesCreated = 0;
         glasses.forEach((glassData, index) => {
-            // console.log(`colorSortGame: Creating glass div for index ${index}`); // Less verbose
             const glassDiv = document.createElement("div");
             glassDiv.classList.add("glass");
             glassDiv.dataset.index = index;
@@ -114,7 +110,7 @@
             try { gameContainer.appendChild(glassDiv); glassesCreated++; }
             catch (e) { console.error(`colorSortGame: Error appending glassDiv ${index}:`, e); }
         });
-        console.log(`colorSortGame: Rendered ${glassesCreated} glasses.`);
+        // console.log(`colorSortGame: Rendered ${glassesCreated} glasses.`); // Less verbose
         updateGameUI();
     }
 
@@ -160,7 +156,7 @@
         const clickedGlassDiv = event.target.closest('.glass');
         if (!clickedGlassDiv) return;
         const clickedIndex = parseInt(clickedGlassDiv.dataset.index);
-        if (isNaN(clickedIndex) || !glasses[clickedIndex]) return; // Add check for valid index
+        if (isNaN(clickedIndex) || !glasses[clickedIndex]) return;
         if (selectedGlassIndex === null) {
             if (glasses[clickedIndex].length > 0) { selectedGlassIndex = clickedIndex; renderAllGlasses(); }
         } else {
@@ -189,7 +185,7 @@
 
             if (!gameContainer || !restartButton) { console.error("colorSortGame: Essential elements missing. Init failed."); return; }
 
-            gameContainer.removeEventListener('click', handleGameContainerClick); // Ensure listeners are fresh
+            gameContainer.removeEventListener('click', handleGameContainerClick);
             gameContainer.addEventListener('click', handleGameContainerClick);
             restartButton.removeEventListener('click', handleRestartClick);
             restartButton.addEventListener('click', handleRestartClick);
