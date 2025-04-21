@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Virtual Pet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <h1>My Pet Hub</h1>
+
+        <!-- Currency Display -->
+        <div class="currency-display">
+            <span id="coins">🪙 Coins: <span id="coin-count">0</span></span>
+            <span id="gems">💎 Gems: <span id="gem-count">0</span></span>
+        </div>
+
+        <!-- Pet Area -->
+        <div id="pet-area">
+            <div id="red-panda-display"></div>
+        </div>
+
+        <!-- Controls Area -->
+        <div id="controls-area">
+             <!-- Manual Sleep Controls -->
+            <div id="sleep-controls">
+                <button id="manual-sleep-button">Go to Sleep 😴</button>
+                <button id="manual-wake-button" style="display: none;">Wake Up!☀️</button>
+            </div>
+            <!-- Cosmetics -->
+            <div id="cosmetics-controls">
+                <h3>Cosmetics</h3>
+                <button id="buy-equip-cowboy-button" data-look="cowboy">Buy Cowboy (100 🪙)</button>
+                <button id="buy-equip-gentleman-button" data-look="gentleman">Buy Gentleman (150 🪙)</button>
+            </div>
+        </div>
+
+        <!-- Daily Bonus Section -->
+        <div class="daily-bonus-section">
+            <h2>Daily Bonus</h2>
+            <button id="claim-bonus-button">Claim Today's Bonus</button>
+            <p id="bonus-message">Check in daily for rewards!</p>
+            <p>Current Streak: <span id="streak-count">0</span> days</p>
+        </div>
+
+        <!-- Minigame Section -->
+        <div class="minigame-section">
+             <h2>Minigames</h2>
+             <button id="play-color-sort-button">Play Color Sort!</button>
+
+             <!-- Color Sort Game Area (Inline, initially hidden) -->
+             <div id="color-sort-game-area" style="display: none;">
+                 <hr> <!-- Separator -->
+                 <div class="game-header">
+                    <h2>Color Sort</h2>
+                    <button id="close-game-button" class="close-game-button">Close Game</button>
+                 </div>
+                 <div class="game-info">
+                     <div class="info-left">
+                         <span id="cs-level-up-arrow" class="level-up-arrow">⬆️</span>
+                         Level: <span id="cs-level-number">1</span>
+                     </div>
+                     <div class="info-center">
+                         <div class="button-group">
+                             <button id="cs-restart-button" title="Restart level">🔄</button>
+                             <span class="button-cost">-<span id="cs-restart-cost-val">10</span> 🪙</span>
+                         </div>
+                     </div>
+                 </div>
+                 <div id="cs-game-container" class="game-container">
+                     <!-- Glasses will be dynamically generated here -->
+                 </div>
+                 <hr> <!-- Separator -->
+             </div>
+             <!-- End Color Sort Game Area -->
+
+        </div>
+
+    </div> <!-- End #app-container -->
+
+    <!-- Scripts -->
+    <script src="petApp.js"></script>
+    <script src="colorSortGame.js"></script>
+
+</body>
+</html>
